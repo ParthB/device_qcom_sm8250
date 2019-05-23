@@ -5,6 +5,22 @@ BUILD_BROKEN_PHONY_TARGETS := true
 BUILD_BROKEN_DUP_RULES := true
 TEMPORARY_DISABLE_PATH_RESTRICTIONS := true
 export TEMPORARY_DISABLE_PATH_RESTRICTIONS
+# For QSSI builds, we should skip building the system image. Instead we build the
+# "non-system" images (that we support).
+
+PRODUCT_BUILD_SYSTEM_IMAGE := false
+PRODUCT_BUILD_SYSTEM_OTHER_IMAGE := false
+PRODUCT_BUILD_VENDOR_IMAGE := true
+PRODUCT_BUILD_PRODUCT_IMAGE := false
+PRODUCT_BUILD_PRODUCT_SERVICES_IMAGE := false
+PRODUCT_BUILD_ODM_IMAGE := false
+PRODUCT_BUILD_CACHE_IMAGE := false
+PRODUCT_BUILD_RAMDISK_IMAGE := true
+PRODUCT_BUILD_USERDATA_IMAGE := true
+
+# Also, since we're going to skip building the system image, we also skip
+# building the OTA package. We'll build this at a later step.
+TARGET_SKIP_OTA_PACKAGE := true
 
 # Enable AVB 2.0
 BOARD_AVB_ENABLE := true
@@ -105,8 +121,6 @@ BOARD_FRP_PARTITION_NAME := frp
 # Android EGL implementation
 PRODUCT_PACKAGES += libGLES_android
 
--include hardware/qcom/display/config/kona.mk
-
 PRODUCT_PACKAGES += fs_config_files
 PRODUCT_PACKAGES += gpio-keys.kl
 
@@ -187,9 +201,6 @@ AUDIO_DLKM += audio_snd_event.ko
 
 PRODUCT_PACKAGES += $(AUDIO_DLKM)
 
-# MSM IRQ Balancer configuration file
-PRODUCT_COPY_FILES += device/qcom/kona/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
-
 # Kernel modules install path
 KERNEL_MODULES_INSTALL := dlkm
 KERNEL_MODULES_OUT := out/target/product/$(PRODUCT_NAME)/$(KERNEL_MODULES_INSTALL)/lib/modules
@@ -242,6 +253,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 #ANT+ stack
 PRODUCT_PACKAGES += \
     libvolumelistener
+
+#FEATURE_OPENGLES_EXTENSION_PACK support string config file
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml
 
 #Vibrator
 PRODUCT_PACKAGES += \
