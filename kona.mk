@@ -159,6 +159,22 @@ PRODUCT_STATIC_BOOT_CONTROL_HAL := \
 PRODUCT_PACKAGES += \
   update_engine_sideload
 
+# f2fs utilities
+PRODUCT_PACKAGES += \
+    sg_write_buffer \
+    f2fs_io \
+    check_f2fs
+
+# Userdata checkpoint
+PRODUCT_PACKAGES += \
+    checkpoint_gc
+
+AB_OTA_POSTINSTALL_CONFIG += \
+    RUN_POSTINSTALL_vendor=true \
+    POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
+    FILESYSTEM_TYPE_vendor=ext4 \
+    POSTINSTALL_OPTIONAL_vendor=true
+
 # Camera configuration file. Shared by passthrough/binderized camera HAL
 PRODUCT_PACKAGES += camera.device@3.2-impl
 PRODUCT_PACKAGES += camera.device@1.0-impl
@@ -209,6 +225,10 @@ KERNEL_MODULES_OUT := out/target/product/$(PRODUCT_NAME)/$(KERNEL_MODULES_INSTAL
 -include $(TOPDIR)vendor/qcom/opensource/audio-hal/primary-hal/configs/kona/kona.mk
 
 USE_LIB_PROCESS_GROUP := true
+
+# MIDI feature
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
 
 # Pro Audio feature
 PRODUCT_COPY_FILES += \
@@ -266,11 +286,17 @@ PRODUCT_BOOT_JARS += tcmiface
 PRODUCT_BOOT_JARS += telephony-ext
 PRODUCT_PACKAGES += telephony-ext
 
+# Vendor property to enable advanced network scanning
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.vendor.radio.enableadvancedscan=true
+
 ###################################################################################
 # This is the End of target.mk file.
 # Now, Pickup other split product.mk files:
 ###################################################################################
 # TODO: Relocate the system product.mk files pickup into qssi lunch, once it is up.
-$(call inherit-product-if-exists, vendor/qcom/defs/product-defs/system/*.mk)
-$(call inherit-product-if-exists, vendor/qcom/defs/product-defs/vendor/*.mk)
+$(foreach sdefs, $(sort $(wildcard vendor/qcom/defs/product-defs/system/*.mk)), \
+    $(call inherit-product, $(sdefs)))
+$(foreach vdefs, $(sort $(wildcard vendor/qcom/defs/product-defs/vendor/*.mk)), \
+    $(call inherit-product, $(vdefs)))
 ###################################################################################
