@@ -49,6 +49,7 @@ on early-fs
 
 on fs
     start hwservicemanager
+    mkdir /mnt/vendor/spunvm 0660 system system
     mount_all /vendor/etc/fstab.qcom --early
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
@@ -59,8 +60,6 @@ on post-fs
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
     write /dev/ipa 1
-    # Enable WLAN cold boot calibration
-    write /sys/devices/platform/soc/b0000000.qcom,cnss-qca6390/fs_ready 1
 
 on late-fs
     wait_for_prop hwservicemanager.ready true
@@ -69,6 +68,8 @@ on late-fs
 
 on post-fs-data
     mkdir /vendor/data/tombstones 0771 system system
+    # Enable WLAN cold boot calibration
+    write /sys/devices/platform/soc/b0000000.qcom,cnss-qca6390/fs_ready 1
 
 on early-boot
     start vendor.sensors
@@ -90,7 +91,6 @@ on boot
     setprop vendor.usb.dpl.inst.name "dpl"
     setprop vendor.usb.qdss.inst.name "qdss"
     setprop vendor.usb.controller a600000.dwc3
-    setprop sys.usb.configfs 1
     #Load WLAN driver
     insmod /vendor/lib/modules/qca_cld3_wlan.ko
 
