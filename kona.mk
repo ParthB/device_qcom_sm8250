@@ -1,6 +1,3 @@
-# Temporary Q config pending cleanup -->
-ALLOW_MISSING_DEPENDENCIES := true
-
 BUILD_BROKEN_PHONY_TARGETS := true
 BUILD_BROKEN_DUP_RULES := true
 TEMPORARY_DISABLE_PATH_RESTRICTIONS := true
@@ -37,7 +34,7 @@ BOARD_AVB_ENABLE := true
 #####Dynamic partition Handling
 ###
 #### Turning this flag to TRUE will enable dynamic partition/super image creation.
-BOARD_DYNAMIC_PARTITION_ENABLE ?=false
+BOARD_DYNAMIC_PARTITION_ENABLE ?= true
 
 ifneq ($(strip $(BOARD_DYNAMIC_PARTITION_ENABLE)),true)
 # Enable chain partition for system, to facilitate system-only OTA in Treble.
@@ -71,14 +68,11 @@ BOARD_HAVE_QCOM_FM := false
 TARGET_DISABLE_PERF_OPTIMIATIONS := false
 TARGET_DISABLE_DISPLAY := false
 
+# privapp-permissions whitelisting (To Fix CTS :privappPermissionsMustBeEnforced)
+PRODUCT_PROPERTY_OVERRIDES += ro.control_privapp_permissions=enforce
+
 $(call inherit-product, device/qcom/qssi/common64.mk)
-# Temporary bring-up config <--
-
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
-
-# Temporary bring-up config -->
-PRODUCT_SUPPORTS_VERITY := false
-# Temporary bring-up config <--
 
 ###########
 # Target naming
@@ -92,8 +86,7 @@ PRODUCT_MODEL := Kona for arm64
 #----------------------------------------------------------------------
 include device/qcom/wlan/kona/wlan.mk
 
-
-TARGET_USES_AOSP := true
+TARGET_USES_AOSP := false
 TARGET_USES_AOSP_FOR_AUDIO := false
 TARGET_USES_QCOM_BSP := false
 
