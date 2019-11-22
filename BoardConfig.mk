@@ -151,7 +151,8 @@ BOARD_VENDOR_KERNEL_MODULES := \
     $(KERNEL_MODULES_OUT)/llcc_perfmon.ko \
     $(KERNEL_MODULES_OUT)/mpq-adapter.ko \
     $(KERNEL_MODULES_OUT)/mpq-dmx-hw-plugin.ko \
-    $(KERNEL_MODULES_OUT)/tspp.ko
+    $(KERNEL_MODULES_OUT)/tspp.ko \
+    $(KERNEL_MODULES_OUT)/wigig_sensing.ko
 
 # check for for userdebug and eng build variants and install the appropriate modules
 ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
@@ -177,7 +178,7 @@ BOARD_RAMDISK_OFFSET     := 0x02000000
 
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := $(shell pwd)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
 TARGET_USES_UNCOMPRESSED_KERNEL := false
 
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
