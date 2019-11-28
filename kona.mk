@@ -341,6 +341,10 @@ PRODUCT_PACKAGES += telephony-ext
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.enableadvancedscan=true
 
+ifneq ($(GENERIC_ODM_IMAGE),true)
+    PRODUCT_COPY_FILE += $(LOCAL_PATH)/manifest-qva.xml:/$(TARGET_ODM_OUT_ETC)/vintf/manifest.xml
+endif
+
 ###################################################################################
 # This is the End of target.mk file.
 # Now, Pickup other split product.mk files:
