@@ -342,6 +342,10 @@ PRODUCT_PACKAGES += telephony-ext
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.enableadvancedscan=true
 
+# Target specific Netflix custom property
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.netflix.bsp_rev=Q8250-19134-1
+
 ###################################################################################
 # This is the End of target.mk file.
 # Now, Pickup other split product.mk files:
